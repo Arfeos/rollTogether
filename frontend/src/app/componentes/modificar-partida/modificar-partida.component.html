@@ -1,0 +1,131 @@
+<div *ngIf="errorCarga!=null"  class="alert alert-danger alert-dismissible fade show" role="alert">
+  {{ errorCarga }}
+
+  <button type="button" class="btn-close" (click)="cerrarAlerta()"></button>
+</div>
+<mat-spinner *ngIf="cargando" diameter="50" class="mx-auto my-5"></mat-spinner>
+<div *ngIf="!cargando && errorCarga==null" class="container mt-5">
+  <!-- Sección de imagen y título -->
+  <div class="row mb-4">
+    <div class="col-md-4 d-flex flex-column align-items-center">
+      <!-- Previsualización de imagen -->
+      <div class="image-upload-container mb-3">
+        <div class="image-preview">
+          <img *ngIf="imageUrl" [src]="imageUrl" alt="Imagen de partida" class="img-fluid rounded">
+          <div *ngIf="!imageUrl" class="image-placeholder">
+            <mat-icon class="upload-icon">casino</mat-icon>
+            <p>Imagen de la partida</p>
+          </div>
+        </div>
+        <input type="file" id="fileInput" (change)="onFileSelected($event)" accept="image/*" hidden>
+        <button mat-stroked-button color="primary" (click)="triggerFileInput()" class="mt-2">
+          <mat-icon>cloud_upload</mat-icon> Subir imagen
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="data-box bg-light p-4 rounded">
+        <h2 class="mb-4">Nueva Partida de Rol</h2>
+
+        <!-- Título y Tipo -->
+        <div class="row">
+          <div class="col-md-8 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Título de la partida</mat-label>
+              <input matInput [(ngModel)]="partida.titulo" name="titulo" required>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Tipo</mat-label>
+              <mat-select [(ngModel)]="partida.tipoPartida" name="tipoPartida" required>
+                <mat-option value="presencial">Presencial</mat-option>
+                <mat-option value="digital">Digital</mat-option>
+                <mat-option value="hibrida">Híbrida</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Sistema y Categoría -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Sistema</mat-label>
+              <mat-select [(ngModel)]="partida.sistema" name="sistema" required appSelectores>
+                <mat-option *ngFor="let sistema of sistemas" [value]="sistema.id" matTooltip="{{ sistema.descripcion }}">
+                  {{ `${sistema.nombre}(${sistema.anio_lanzamiento})` }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Categoría</mat-label>
+              <mat-select [(ngModel)]="partida.categoria" name="categoria" required appSelectores>
+                <mat-option *ngFor="let categoria of categorias" [value]="categoria.id">
+                  {{ categoria.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección inferior con más campos -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="data-box bg-light p-4 rounded">
+        <!-- Descripción -->
+        <div class="mb-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Descripción de la partida</mat-label>
+            <textarea matInput [(ngModel)]="partida.descripcion" name="descripcion" rows="4"></textarea>
+          </mat-form-field>
+        </div>
+
+        <!-- Detalles adicionales -->
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Aforo máximo</mat-label>
+              <input matInput type="number" [(ngModel)]="partida.aforoMaximo" name="aforoMaximo" min="1" required>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 mb-3">
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha *</mat-label>
+              <input matInput [matDatepicker]="datePicker" [(ngModel)]="fecha" name="fecha" required>
+              <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+              <mat-datepicker #datePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3  mb-3">
+            <mat-form-field appearance="outline">
+              <mat-label>Hora *</mat-label>
+              <input matInput type="time" [(ngModel)]="hora" name="hora" required>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Ubicación/Plataforma</mat-label>
+              <input matInput [(ngModel)]="partida.ubicacion" name="ubicacion" required>
+              <mat-hint>{{ partida.tipoPartida === 'digital' ? 'Ej: Discord, Roll20' : 'Ej: Cafetería El Dragón, Madrid'
+                }}</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Botón de envío -->
+        <div class="text-end mt-3">
+          <button mat-raised-button color="primary" type="submit" (click)="onSubmit()">
+            <mat-icon>save</mat-icon> Crear partida
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

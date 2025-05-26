@@ -1,0 +1,60 @@
+.card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+/* Estilos para el sidenav */
+.example-container {
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+mat-sidenav {
+  width: 250px;
+  background-color: #f8f9fa;
+  box-shadow: 3px 0 6px rgba(0,0,0,0.1);
+}
+
+mat-sidenav-content {
+  padding: 20px;
+}
+
+
+
+/* Estilos para el menú */
+mat-nav-list {
+  padding-top: 0;
+}
+
+mat-list-item {
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+mat-list-item:hover {
+  background-color: #e9ecef;
+}
+.card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+/* Estilos para el botón de toggle */
+.d-md-none {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .d-md-none {
+    display: block;
+  }
+  mat-sidenav {
+    width: 80%;
+  }
+  mat-sidenav-content {
+    margin-left: 0 !important;
+  }
+}

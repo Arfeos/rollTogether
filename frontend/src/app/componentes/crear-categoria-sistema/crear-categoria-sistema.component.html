@@ -1,0 +1,84 @@
+<div class="container-fluid mt-4">
+  <!-- Selector de tipo -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <mat-card class="p-4">
+        <h2 class="mb-4">Seleccione qué desea registrar:</h2>
+        
+        <div class="d-flex gap-3">
+          <button mat-raised-button 
+                  color="primary" 
+                  (click)="seleccionarTipo('categoria')"
+                  [class.selected]="tipoSeleccionado === 'categoria'">
+            <mat-icon>category</mat-icon>
+            Categoría
+          </button>
+          
+          <button mat-raised-button 
+                  color="primary" 
+                  (click)="seleccionarTipo('sistema')"
+                  [class.selected]="tipoSeleccionado === 'sistema'">
+            <mat-icon>computer</mat-icon>
+            Sistema
+          </button>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Formulario de Categoría -->
+  <div class="row" *ngIf="mostrarFormulario && tipoSeleccionado === 'categoria'">
+    <div class="col-12">
+      <mat-card class="p-4">
+        <h3 class="mb-4">Registrar Nueva Categoría</h3>
+        
+        <form (ngSubmit)="registrarCategoria()">
+          <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Nombre de la categoría</mat-label>
+            <input matInput [(ngModel)]="nombreCategoria" name="nombreCategoria" required>
+          </mat-form-field>
+          
+          <div class="text-end">
+            <button mat-raised-button color="primary" type="submit">
+              <mat-icon>save</mat-icon>
+              Registrar Categoría
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Formulario de Sistema -->
+  <div class="row" *ngIf="mostrarFormulario && tipoSeleccionado === 'sistema'">
+    <div class="col-12">
+      <mat-card class="p-4">
+        <h3 class="mb-4">Registrar Nuevo Sistema</h3>
+        
+        <form (ngSubmit)="registrarSistema()">
+          <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Nombre del sistema</mat-label>
+            <input matInput [(ngModel)]="nombreSistema" name="nombreSistema" required>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Descripción</mat-label>
+            <textarea matInput [(ngModel)]="descripcionSistema" name="descripcionSistema" rows="3" required></textarea>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Año de salida</mat-label>
+            <input matInput type="number" [(ngModel)]="anioSalidaSistema" name="anioSalidaSistema" required>
+          </mat-form-field>
+          
+          <div class="text-end">
+            <button mat-raised-button color="primary" type="submit">
+              <mat-icon>save</mat-icon>
+              Registrar Sistema
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+</div>

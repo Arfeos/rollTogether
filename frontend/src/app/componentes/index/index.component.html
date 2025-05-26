@@ -1,0 +1,130 @@
+<div *ngIf="errorCarga!=null"  class="alert alert-danger alert-dismissible fade show" role="alert">
+  {{ errorCarga }}
+
+  <button type="button" class="btn-close" (click)="cerrarAlerta()"></button>
+</div>
+<mat-spinner *ngIf="cargando" diameter="50" class="mx-auto my-5"></mat-spinner>
+<div *ngIf="!cargando && errorCarga==null">
+  <div class="container mt-4">
+    <!-- Filtros y ordenación -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text">Ordenar por</span>
+          <select class="form-select" (change)="ordenarPartidas($any($event.target).value)">
+            <option value="fecha">Fecha del evento</option>
+            <option value="nombre">Nombre</option>
+            <option value="creacion" selected>Fecha de creación</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6 text-end">
+        <button class="btn btn-outline-primary" (click)="abrirModalFiltros()">
+          <i class="fas fa-filter"></i> Filtrar
+        </button>
+        <button *ngIf="estaLogeado" class="btn btn-primary ms-3" routerLink="/crear-partida">
+          Crear partida
+        </button>
+      </div>
+    </div>
+
+    <!-- Listado de partidas -->
+    <div *ngFor="let partida of partidasPaginadas" class="card mb-4 shadow-sm border-secondary">
+      <div class="row g-0 align-items-center p-3" [routerLink]="['/partida', partida.id]" style="cursor: pointer;">
+        <div class="col-md-5">
+          <img [src]="obtenerProtada(partida.portada)" [alt]="partida.titulo"
+            class="img-fluid rounded-start w-100" style="aspect-ratio: 1.5 / 1;">
+        </div>
+        <div class="col-md-7">
+          <div class="card-body">
+            <h5 class="card-title">{{ partida.titulo }}</h5>
+            <p class="card-text">
+              <strong>Fecha y hora:</strong>
+              {{ partida.fecha | date: 'dd/MM/yyyy HH:mm' }}
+            </p>
+            <p class="card-text">
+              <strong>Ubicación:</strong> {{ partida.ubicacion }}
+            </p>
+            <p class="card-text">
+              <strong>Aforo:</strong> {{ partida.plazas_ocupadas }} / {{ partida.aforo_max }}
+            </p>
+            <div class="d-flex align-items-center mt-2">
+              <img [src]="obtenerPerfil(partida.foto_usuario)" alt="Perfil"
+                class="rounded-circle me-2" style="width: 70px; height: 70px; object-fit: cover;">
+              <span>{{ partida.creador_nombre || 'Anónimo' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav aria-label="Paginación de partidas" class="d-flex justify-content-between align-items-center">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="paginaActual === 1">
+          <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">&laquo;</button>
+        </li>
+        <li class="page-item" *ngFor="let i of [].constructor(totalPaginas); let idx = index"
+          [class.active]="idx + 1 === paginaActual">
+          <button class="page-link" (click)="cambiarPagina(idx + 1)">{{ idx + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+          <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">&raquo;</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+<!-- Modal de Filtros -->
+<ng-template #filtrosModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Filtrar Partidas</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label class="form-label">Tipo de partida</label>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="filtroPresencial" [(ngModel)]="filtros.presencial">
+        <label class="form-check-label" for="filtroPresencial">
+          Presencial
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="filtroVirtual" [(ngModel)]="filtros.virtual">
+        <label class="form-check-label" for="filtroVirtual">
+          Virtual
+        </label>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Sistema</label>
+      <select class="form-select" [(ngModel)]="filtros.sistema">
+        <option value="">Todos los sistemas</option>
+        <option *ngFor="let sistema of sistemas" [value]="sistema">{{sistema}}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Categoría</label>
+      <select class="form-select" [(ngModel)]="filtros.categoria">
+        <option value="">Todas las categorías</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria">{{categoria}}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="filtroAforo" [(ngModel)]="filtros.conAforo">
+        <label class="form-check-label" for="filtroAforo">
+          Solo con aforo disponible
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="aplicarFiltros(); modal.close()">Aplicar Filtros</button>
+  </div>
+</ng-template>

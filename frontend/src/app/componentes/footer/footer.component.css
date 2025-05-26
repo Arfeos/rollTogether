@@ -1,0 +1,23 @@
+.nombre-empresa{
+    height: 100%;
+
+}
+h5, h6{
+    color: white;
+}
+.formulario{
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+@media(max-width:767px){
+    .formulario{
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+}

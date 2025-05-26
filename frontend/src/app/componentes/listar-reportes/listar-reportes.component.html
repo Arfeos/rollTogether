@@ -1,0 +1,62 @@
+<div *ngIf="errorcarga!=null"  class="alert alert-danger alert-dismissible fade show" role="alert">
+  {{ errorcarga }}
+
+  <button type="button" class="btn-close" (click)="cerrarAlerta()"></button>
+</div>
+<mat-spinner *ngIf="cargando" diameter="50" class="mx-auto my-5"></mat-spinner>
+<div *ngIf="!cargando && errorcarga==null" class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Listado de Reportes</h2>
+        </div>
+
+        <div class="card-body">
+            <div *ngIf="reportesPaginados.length === 0" class="text-center py-4">
+                <mat-icon class="display-4 text-muted">group_off</mat-icon>
+                <h3 class="text-muted">No hay Reportes registrados</h3>
+            </div>
+
+            <div *ngIf="reportesPaginados.length > 0">
+                <div *ngFor="let Reporte of reportesPaginados" class="mb-3 p-3 border rounded">
+                    <div [routerLink]="['/reporte', Reporte.id]"  class="cuadro align-items-center justify-content-around">
+
+                        <div class="flex-grow-1 d-flex align-items-center">
+                            <mat-icon class="align-middle me-1">email</mat-icon>
+                            {{Reporte.email}}
+                        </div>
+                        <div class="flex-grow-1 d-flex align-items-center">
+                            <mat-icon class="align-middle me-1">warning</mat-icon> 
+                            {{Reporte.asunto}}
+                        </div>
+                        <div class="flex-grow-1 d-flex align-items-center">
+                            <mat-icon class="align-middle me-1">calendar_today</mat-icon>
+                            {{Reporte.fecha_reporte}}
+                        </div>
+                        <div    class="flex-grow-1 d-flex align-items-center">
+                                            <mat-icon *ngIf="Reporte.estado=='pendiente'" class="align-middle me-1">fiber_manual_record</mat-icon>
+                            <mat-icon *ngIf="Reporte.estado=='resuelto'" class="align-middle me-1">check_circle</mat-icon>
+                            {{Reporte.estado}}
+                        </div>
+
+                    </div>
+                </div>
+
+                <nav aria-label="Paginación de partidas" class="d-flex justify-content-between align-items-center">
+                    <ul class="pagination">
+                        <li class="page-item" [class.disabled]="paginaActual === 1">
+                            <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">&laquo;</button>
+                        </li>
+                        <li class="page-item" *ngFor="let i of [].constructor(totalPaginas); let idx = index"
+                            [class.active]="idx + 1 === paginaActual">
+                            <button class="page-link" (click)="cambiarPagina(idx + 1)">{{ idx + 1 }}</button>
+                        </li>
+                        <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                            <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">&raquo;</button>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,139 @@
+<mat-spinner *ngIf="cargando" diameter="50" class="mx-auto my-5"></mat-spinner>
+
+<!-- Alert de error -->
+<div *ngIf="errorCarga" class="alert alert-danger alert-dismissible fade show" role="alert">
+  {{ errorCarga }}
+  <button type="button" class="btn-close" (click)="cerrarAlerta()"></button>
+</div>
+<mat-sidenav-container *ngIf="!cargando && errorCarga==null" class="h-100" style="min-height: 400px;">
+  <mat-sidenav #drawer mode="side" [opened]="menuAbierto" [style.width.px]="menuAbierto ? 250 : 60" class="p-2"
+    *ngIf="esMiPerfil">
+    <!-- Botón toggler -->
+    <button mat-icon-button (click)="toggleMenu()">
+      <mat-icon>{{ menuAbierto ? 'chevron_left' : 'menu' }}</mat-icon>
+    </button>
+
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['/perfil', datosUsuario.id]" routerLinkActive="active">
+        <mat-icon>account_circle</mat-icon>
+        <span *ngIf="menuAbierto" class="ms-2">Mi Perfil</span>
+      </a>
+      <a mat-list-item [routerLink]="['/Mis-partidas']" routerLinkActive="active">
+        <mat-icon>sports_esports</mat-icon>
+        <span *ngIf="menuAbierto" class="ms-2">Mis Partidas</span>
+      </a>
+      <a mat-list-item [routerLink]="['/Partidas-inscritas']" routerLinkActive="active">
+        <mat-icon>list_alt</mat-icon>
+        <span *ngIf="menuAbierto" class="ms-2">Partidas Inscritas</span>
+      </a>
+      <a mat-list-item *ngIf="esAdmin" [routerLink]="['/admin']" routerLinkActive="active">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <span *ngIf="menuAbierto" class="ms-2">Panel Admin</span>
+      </a>
+      <a mat-list-item (click)="cerrarSesion()"routerLinkActive="active">
+        <mat-icon>logout</mat-icon>
+        <span *ngIf="menuAbierto" class="ms-2">cerrar Sesion</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Contenido principal -->
+  <mat-sidenav-content>
+    <div  class="container-fluid my-3">
+      <section [class]="esMiPerfil ? 'col-md-11' : 'col-12'">
+        <div class="row">
+          <div class="col-md-5 col-12 p-0   offset-0 d-flex align-items-end cabecera">
+            <img [src]="imagenPerfil" alt="Perfil" class="rounded-circle img-thumbnail"
+              style="width: 50%; aspect-ratio: 1 / 1;">
+            <button *ngIf="esMiPerfil" class="btn btn-secondary p-3" (click)="abrirModal(modalActualizarImagen)">
+              Cambiar imagen
+            </button>
+          </div>
+        </div>
+
+        <!-- Formulario de datos -->
+        <div class="row mt-2">
+          <div class=" col-12 offset-0">
+            <div class="data-box bg-light p-4 rounded" style="width: 100%;">
+              <h3 class="fs-1 mb-4">Datos del Usuario</h3>
+
+              <!-- Modo visualización (no es mi perfil y no es admin) -->
+              <div *ngIf="!esMiPerfil && !esAdmin">
+                <div class="mb-3">
+                  <p><strong>Usuario:</strong> {{usuario}}</p>
+                </div>
+                <div class="mb-3">
+                  <p><strong>Biografía:</strong></p>
+                  <p class="border p-3 rounded">{{biografia}}</p>
+                </div>
+              </div>
+
+              <!-- Modo edición (es mi perfil o es admin) -->
+              <form *ngIf="esMiPerfil || esAdmin" #perfilForm="ngForm" (ngSubmit)="actualizarPerfil()">
+                <div class="mb-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Usuario</mat-label>
+                    <input matInput type="text" name="usuario" [(ngModel)]="usuario" required>
+                  </mat-form-field>
+                </div>
+                <div class="mb-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" name="correo" [(ngModel)]="correo" [readonly]="!esAdmin" required>
+                  </mat-form-field>
+                </div>
+                <div class="mb-3" *ngIf="esMiPerfil">
+                  <mat-form-field appearance="outline" class="w-100 mb-2">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput type="password" name="contrasena" [(ngModel)]="contrasena"
+                      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" placeholder="Nueva contraseña">
+                    <mat-hint>Debe contener al menos un número, una mayúscula, una minúscula y 6 caracteres</mat-hint>
+                  </mat-form-field>
+                </div>
+                <div class="mb-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Biografía</mat-label>
+                    <textarea matInput name="biografia" [(ngModel)]="biografia" rows="4"></textarea>
+                  </mat-form-field>
+                </div>
+                <div class="text-end">
+                  <button mat-raised-button color="primary" type="submit" [disabled]="!perfilForm.valid">
+                    Guardar cambios
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </section>
+      <button *ngIf="!menuAbierto && esMiPerfil" mat-icon-button color="primary" (click)="toggleMenu()"
+        style="position: fixed; top: 7rem; left: 1rem; z-index: 1000; background: white;">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+<ng-template #modalActualizarImagen let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Actualizar imagen</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="errorImagen" class="alert alert-danger">{{errorImagen}}</div>
+    <form>
+      <div class="mb-3">
+        <input type="file" (change)="onArchivoSeleccionado($event)" class="form-control" accept="image/*">
+      </div>
+      <div class="text-end">
+        <button mat-raised-button color="primary" (click)="subirImagen()" [disabled]="!archivoSeleccionado">
+          Subir Imagen
+        </button>
+        <button mat-button class="ms-2" (click)="modal.dismiss()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

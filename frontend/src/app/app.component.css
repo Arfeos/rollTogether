@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+router-outlet {
+  display: block;
+  flex-grow: 0; /* Evita que crezca automáticamente */
+}
+
+router-outlet + * {
+  flex-grow: 1; /* Hace que el contenido insertado ocupe el espacio disponible */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Opcional: para el contenido dentro de las rutas */
+router-outlet + * > *:first-child {
+  flex-grow: 0; /* El contenido principal no crece */
+}
+
+router-outlet + * > *:last-child {
+  flex-grow: 1; /* El espacio en blanco al final */
+  min-height: 20px; 
+}

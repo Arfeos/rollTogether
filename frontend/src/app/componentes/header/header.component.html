@@ -1,0 +1,195 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fs-3" routerLink="/"
+      ><img src="logo.png" width="70" height="70" alt=""
+    /></a>
+
+    <ul class="navbar-nav ms-auto">
+      <ng-container *ngIf="usuarioLogueado; else notLoggedIn">
+        <a
+          class="nav-link d-flex align-items-center"
+          role="button"
+          [routerLink]="['/perfil',id]"
+          data-bs-toggle="dropdown"
+        >
+        
+          <img
+            [src]="fotoUrl"
+            alt="Perfil"
+            class="rounded-circle"
+            width="50"
+            height="50"
+          />
+          <span class="ms-2 fs-4">{{ usuario }}</span>
+        </a>
+      </ng-container>
+      <ng-template #notLoggedIn>
+        <li class="nav-item">
+          <a class="nav-link fs-4" (click)="abrirModal(registerModal)"
+            >Registrarse</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fs-4" (click)="abrirModal(loginModal)">Login</a>
+        </li>
+      </ng-template>
+    </ul>
+  </div>
+</nav>
+
+<!-- Alertas -->
+<div
+  *ngFor="let alert of alerts; let i = index"
+  class="alert alert-danger alert-dismissible fade show"
+  role="alert"
+>
+  {{ alert }}
+  <button type="button" class="btn-close" (click)="cerrarAlerta(i)"></button>
+</div>
+
+<!-- Login Modal -->
+<ng-template #loginModal>
+  <div class="modal-header">
+    <h5 class="modal-title">Login</h5>
+    <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="loginError" class="alert alert-danger">{{ loginError }}</div>
+
+    <div class="mb-3 input-group">
+      <span class="input-group-text"><mat-icon>mail</mat-icon></span>
+      <input
+        type="text"
+        [(ngModel)]="emailInput"
+        class="form-control"
+        placeholder="email"
+      />
+    </div>
+    <div class="mb-3 input-group">
+            <span class="input-group-text"><mat-icon>lock</mat-icon></span>
+      <input
+        type="password"
+        [(ngModel)]="contrasenaInput"
+        class="form-control"
+        placeholder="Contraseña"
+      />
+    </div>
+    <div class="form-check mb-3">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        [(ngModel)]="recordarme"
+      />
+      <label class="form-check-label">Recordarme</label>
+    </div>
+    <button class="btn btn-success me-2" (click)="login()">
+      Iniciar sesión
+    </button>
+    <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+    <p class="mt-3">
+      ¿No tienes cuenta?
+      <a
+        class="text-primary enlaces"
+        (click)="cerrarModal(); abrirModal(registerModal)"
+        >Regístrate aquí</a
+      >
+    </p>
+    <p>
+      <a
+        class="text-primary enlaces"
+        (click)="cerrarModal(); abrirModal(recoverModal)"
+        >¿Olvidaste tu contraseña?</a
+      >
+    </p>
+  </div>
+</ng-template>
+
+<!-- Register Modal -->
+<ng-template #registerModal>
+  <div class="modal-header">
+    <h5 class="modal-title">Registrar usuario</h5>
+    <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="registerError" class="alert alert-danger">
+      {{ registerError }}
+    </div>
+
+    <form (ngSubmit)="registrar()">
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Usuario"
+          [(ngModel)]="registerData.nombre"
+          name="nombre"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <input
+          type="email"
+          class="form-control"
+          placeholder="Correo"
+          [(ngModel)]="registerData.email"
+          name="email"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <input
+          type="password"
+          class="form-control"
+          placeholder="Contraseña"
+          [(ngModel)]="registerData.password"
+          name="password"
+          required
+          pattern="(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+        />
+      </div>
+      <div class="mb-3">
+    <input
+      type="file"
+      class="form-control"
+      (change)="handleFileInput($event)"
+      accept="image/*"
+    />
+      </div>
+
+      <button type="submit" class="btn btn-success me-2">Registrarse</button>
+      <button type="button" class="btn btn-secondary" (click)="cerrarModal()">
+        Cancelar
+      </button>
+    </form>
+  </div>
+</ng-template>
+
+<!-- Recover Modal -->
+<ng-template #recoverModal>
+  <div class="modal-header">
+    <h5 class="modal-title">Recuperar cuenta</h5>
+    <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+  </div>
+  <div class="modal-body">
+    <form #f="ngForm" (ngSubmit)="recuperar()">
+      <div class="mb-3">
+        <label
+          >Ingresa tu correo, si existe una cuenta se enviará un correo de
+          recuperación</label
+        >
+        <input
+          type="email"
+          class="form-control"
+          placeholder="Tu correo"
+          [(ngModel)]="emailrecuperacion"
+          name="emailrecuperacion"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-success me-2">Recuperar</button>
+      <button type="button" class="btn btn-secondary" (click)="cerrarModal()">
+        Cancelar
+      </button>
+    </form>
+  </div>
+</ng-template>

@@ -1,0 +1,19 @@
+.list-group-item {
+  transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+.page-link {
+  cursor: pointer;
+}
+
+.btn-sm {
+  min-width: 50px;
+}
+
+.rounded-circle {
+  object-fit: cover;
+}
