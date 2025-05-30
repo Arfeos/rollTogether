@@ -18,7 +18,7 @@
 
       <div *ngIf="usuariosPaginados.length > 0">
         <div *ngFor="let usuario of usuariosPaginados" class="mb-3 p-3 border rounded">
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center carta">
             <img [src]="getPerfil(usuario.foto_perfil)" 
                  [alt]="usuario.nombre" 
                  class="rounded-circle me-4"
@@ -43,7 +43,7 @@
               </div>
             </div>
 
-            <div class="d-flex flex-column align-items-center">
+            <div class="d-flex flex-column align-items-center botones">
                 <button mat-icon-button 
                 color="primary" 
                 matTooltip="Editar usuario"

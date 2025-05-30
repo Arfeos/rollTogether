@@ -17,3 +17,11 @@
 .rounded-circle {
   object-fit: cover;
 }
+@media (max-width:760px){
+  .carta{
+    flex-direction: column;
+  }
+  .botones{
+    flex-direction: row !important;
+  }
+}

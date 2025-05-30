@@ -81,7 +81,6 @@ class PartidasController
             return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
         }
 
-        // Manejo de la imagen de portada
         $portada = '';
         if ($uploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
             $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
@@ -96,7 +95,6 @@ class PartidasController
             $portada = $nombreArchivo;
         }
 
-        // Preparar los valores para bindParam()
         $titulo = $data['titulo'];
         $descripcion = $data['descripcion'];
         $tipo = $data['tipo'];
@@ -149,7 +147,6 @@ class PartidasController
         $id = $args['id'];
         $data = json_decode($request->getBody()->getContents(), true);
 
-        // Validación mínima
         if (!isset($data['titulo']) || !isset($data['descripcion'])) {
             $response->getBody()->write(json_encode(['error' => 'Faltan campos obligatorios']));
             return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
@@ -205,7 +202,6 @@ class PartidasController
 
         $uploadedFile->moveTo($directorioDestino . DIRECTORY_SEPARATOR . $nombreArchivo);
 
-        // Actualizar el nombre de la portada en la BD
         $stmt = $this->db->prepare("UPDATE partidas SET portada = :portada WHERE id = :id");
         $stmt->bindParam(':portada', $nombreArchivo);
         $stmt->bindParam(':id', $id);
@@ -258,15 +254,15 @@ class PartidasController
         $id = (int)$args['id'];
 
         $authHeader = $request->getHeaderLine('Authorization');
-    if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-        $response->getBody()->write(json_encode(["error" => "Token no proporcionado"]));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-    }
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            $response->getBody()->write(json_encode(["error" => "Token no proporcionado"]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        }
 
-    $token = $matches[1];
+        $token = $matches[1];
 
-    try {
-        $decoded = JWT::decode($token, new \Firebase\JWT\Key($_ENV['SECRET_KEY'], 'HS256'));
+        try {
+            $decoded = JWT::decode($token, new \Firebase\JWT\Key($_ENV['SECRET_KEY'], 'HS256'));
             $rol = $decoded->rol ?? 'usuario';
         } catch (\Exception $e) {
             $payload = ['error' => 'Token inválido'];
@@ -274,7 +270,6 @@ class PartidasController
             return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
         }
 
-        // Obtener estado actual de la partida
         $stmt = $this->db->prepare("SELECT estado FROM partidas WHERE id = :id");
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

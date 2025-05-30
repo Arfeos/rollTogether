@@ -98,6 +98,7 @@ export class CrearPartidaComponent {
     }).subscribe({
       next: (data: any) => {
         this.categorias = data;
+              this.cargando= false;
       },
       error: (err) => {
         console.error('Error al cargar categorías:', err);

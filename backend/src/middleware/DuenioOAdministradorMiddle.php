@@ -19,7 +19,6 @@ class DuenioOAdministradorMiddle
                            ->withStatus(401);
         }
         
-        // Obtener la ruta usando RouteContext
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
         
@@ -29,8 +28,7 @@ class DuenioOAdministradorMiddle
             return $response->withHeader('Content-Type', 'application/json')
                            ->withStatus(404);
         }
-        
-        // Obtener el ID del parámetro de la ruta
+
         $id = $route->getArgument('id') ?? $route->getArgument('id_usuario');
         
         if (!$id) {
@@ -39,8 +37,7 @@ class DuenioOAdministradorMiddle
             return $response->withHeader('Content-Type', 'application/json')
                            ->withStatus(400);
         }
-        
-        // Verificar si es admin o el dueño del recurso
+
         $isAdmin = $tokenData['rol'] === 'admin';
         $isOwner = $tokenData['sub'] == $id;
         

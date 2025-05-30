@@ -64,36 +64,34 @@ class InscripcionesController
         return $response->withHeader('Content-Type', 'application/json');
     }
     public function checkautenticado(Request $request, Response $response, array $args): Response
-{
-    $id_partida = $args['id_partida'];
+    {
+        $id_partida = $args['id_partida'];
 
-    $tokenData = $request->getAttribute('decoded_token_data');
-    if (!$tokenData) {
-        $response->getBody()->write(json_encode(['error' => 'No autenticado']));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-    }
-    $id_usuario = $tokenData['sub'];
-    $stmt = $this->db->prepare("
+        $tokenData = $request->getAttribute('decoded_token_data');
+        if (!$tokenData) {
+            $response->getBody()->write(json_encode(['error' => 'No autenticado']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        }
+        $id_usuario = $tokenData['sub'];
+        $stmt = $this->db->prepare("
         SELECT COUNT(*) as count
         FROM inscripciones
         WHERE id_partida = :id_partida AND id_usuario = :id_usuario
     ");
-    $stmt->bindParam(':id_partida', $id_partida);
-    $stmt->bindParam(':id_usuario', $id_usuario);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':id_partida', $id_partida);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $inscrito = $result['count'] > 0;
+        $inscrito = $result['count'] > 0;
 
-    $response->getBody()->write(json_encode(['inscrito' => $inscrito]));
-    return $response->withHeader('Content-Type', 'application/json');
-}
+        $response->getBody()->write(json_encode(['inscrito' => $inscrito]));
+        return $response->withHeader('Content-Type', 'application/json');
+    }
 
     public function create(Request $request, Response $response): Response
     {
         $data = $request->getParsedBody();
-
-        // Verificar si ya existe la inscripción
         $check = $this->db->prepare("
             SELECT * FROM inscripciones 
             WHERE id_usuario = :id_usuario AND id_partida = :id_partida
@@ -106,8 +104,6 @@ class InscripcionesController
             $response->getBody()->write(json_encode(['error' => 'El usuario ya está inscrito en esta partida']));
             return $response->withStatus(400);
         }
-
-        // Verificar plazas disponibles
         $partida = $this->db->prepare("
             SELECT aforo_max, plazas_ocupadas FROM partidas WHERE id = :id_partida
         ");
@@ -120,7 +116,6 @@ class InscripcionesController
             return $response->withStatus(400);
         }
 
-        // Crear la inscripción
         $stmt = $this->db->prepare("
             INSERT INTO inscripciones (id_usuario, id_partida)
             VALUES (:id_usuario, :id_partida)
@@ -148,22 +143,21 @@ class InscripcionesController
 
     public function delete(Request $request, Response $response, array $args): Response
     {
-$authHeader = $request->getHeaderLine('Authorization');
-    if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-        $response->getBody()->write(json_encode(["error" => "Token no proporcionado"]));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-    }
+        $authHeader = $request->getHeaderLine('Authorization');
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            $response->getBody()->write(json_encode(["error" => "Token no proporcionado"]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        }
 
-    $token = $matches[1];
+        $token = $matches[1];
 
-    try {
-        $decoded = JWT::decode($token, new \Firebase\JWT\Key($_ENV['SECRET_KEY'], 'HS256'));
-        $id_usuario = $decoded->sub;
-        
-    } catch (\Exception $e) {
-        $response->getBody()->write(json_encode(["error" => "Token inválido o expirado"]));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-    }
+        try {
+            $decoded = JWT::decode($token, new \Firebase\JWT\Key($_ENV['SECRET_KEY'], 'HS256'));
+            $id_usuario = $decoded->sub;
+        } catch (\Exception $e) {
+            $response->getBody()->write(json_encode(["error" => "Token inválido o expirado"]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        }
         $id_partida = $args['id_partida'];
 
         $check = $this->db->prepare("

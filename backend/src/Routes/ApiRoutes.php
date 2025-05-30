@@ -50,7 +50,7 @@ return function ($app) {
         });
         
         // Partidas
-        $group->group('/partidas', function (RouteCollectorProxy $group) {
+             $group->group('/partidas', function (RouteCollectorProxy $group) {
             $group->get('', [PartidasController::class, 'getAll']);
             $group->get('/admin', [PartidasController::class, 'getAllAdmin'])->add(new AdministradorMiddleware());
             $group->get('/{id}', [PartidasController::class, 'getById']);
@@ -94,6 +94,7 @@ return function ($app) {
             $group->get('', [SistemasJuegoController::class, 'getAll']);
             
             // Rutas protegidas
+            $group->delete('/{id}', [SistemasJuegoController::class, 'delete'])->add(new DuenioPartidaOAdministradorMiddle());
             $group->post('', [SistemasJuegoController::class, 'create'])->add(new AdministradorMiddleware());
             $group->put('/{id}', [SistemasJuegoController::class, 'update'])->add(new AdministradorMiddleware());
         });

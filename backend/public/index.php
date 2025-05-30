@@ -19,7 +19,6 @@ $app->addErrorMiddleware(true, true, true);
 $app->addBodyParsingMiddleware();
 
 // Middleware CORS
-// Middleware CORS (debe ir ANTES del middleware JWT)
 $app->add(function ($request, $handler) {
     $response = $handler->handle($request);
     

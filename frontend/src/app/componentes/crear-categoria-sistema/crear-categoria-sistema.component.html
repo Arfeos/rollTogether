@@ -1,4 +1,7 @@
-<div class="container-fluid mt-4">
+<div *ngIf="errorCarga" class="alert alert-danger">
+  {{ errorCarga }}
+</div>
+<div *ngIf="errorCarga==null && !cargando" class="container-fluid mt-4">
   <!-- Selector de tipo -->
   <div class="row mb-4">
     <div class="col-12">

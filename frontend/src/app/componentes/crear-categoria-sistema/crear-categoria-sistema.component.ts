@@ -36,12 +36,12 @@ tipoSeleccionado: string = '';
   
   constructor(private authService:AuthService) { }
 ngOnInit(): void {
-     if (!this.authService.estaAutenticado() || this.authService.getDatosUsuario().rol !== 'admin') {
-      this.errorCarga = "debes ser administrador para acceder a esta sección";
-      this.cargando= false;
-      return;
-    }
+  if (!this.authService.estaAutenticado() || this.authService.getDatosUsuario().rol !== 'admin') {
+    this.errorCarga = "Debes ser administrador para acceder a esta sección";
   }
+  this.cargando = false;
+}
+
   seleccionarTipo(tipo: string) {
     this.tipoSeleccionado = tipo;
     this.mostrarFormulario = true;
