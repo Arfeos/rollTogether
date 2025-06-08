@@ -17,11 +17,19 @@
 .rounded-circle {
   object-fit: cover;
 }
+.card-header{
+      background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+    color: white;
+    padding: 25px;
+}
 @media (max-width:760px){
   .carta{
     flex-direction: column;
   }
   .botones{
     flex-direction: row !important;
+  }
+  .datos{
+    text-align: center;
   }
 }

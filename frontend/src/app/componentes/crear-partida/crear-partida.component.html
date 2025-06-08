@@ -79,14 +79,14 @@
     <div class="col-md-12">
       <div class="data-box bg-light p-4 rounded">
         <!-- Detalles adicionales -->
-        <div class="row">
-          <div class="col-md-3 mb-3">
+        <div class="row campos">
+          <div class=" mb-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Aforo máximo</mat-label>
               <input matInput type="number" [(ngModel)]="partida.aforoMaximo" name="aforoMaximo" min="1" required>
             </mat-form-field>
           </div>
-          <div class="col-md-3 mb-3">
+          <div class=" mb-3">
             <mat-form-field appearance="outline">
               <mat-label>Fecha *</mat-label>
               <input matInput [matDatepicker]="datePicker" [(ngModel)]="fecha" required>
@@ -94,13 +94,13 @@
               <mat-datepicker #datePicker></mat-datepicker>
             </mat-form-field>
           </div>
-          <div class="col-md-3  mb-3">
+          <div class=" mb-3">
             <mat-form-field appearance="outline">
               <mat-label>Hora *</mat-label>
               <input matInput type="time" [(ngModel)]="hora" required>
             </mat-form-field>
           </div>
-          <div class="col-md-3 mb-3">
+          <div class=" mb-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Ubicación/Plataforma</mat-label>
               <input matInput [(ngModel)]="partida.ubicacion" name="ubicacion" required>

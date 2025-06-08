@@ -1,0 +1,32 @@
+.list-group-item {
+  transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+.page-link {
+  cursor: pointer;
+}
+
+.btn-sm {
+  min-width: 50px;
+}
+
+.rounded-circle {
+  object-fit: cover;
+}
+.card-header{
+      background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+    color: white;
+    padding: 25px;
+}
+@media (max-width:760px){
+  .carta{
+    flex-direction: column !important;
+  }
+  .botones{
+    flex-direction: row !important;
+  }
+}

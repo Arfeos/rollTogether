@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, TemplateRef } from '@angular/core';
+import { Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -9,23 +9,25 @@ import { ImageService } from '../../servicios/image.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
+import { MatHint } from '@angular/material/input';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIcon],
+  imports: [CommonModule, FormsModule, RouterModule, MatIcon, MatHint],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
   usuarioLogueado = false;
   id: string | null = null;
-
+  @ViewChild('passwordInput') passwordInput!: ElementRef;
+  @ViewChild('loginModal') loginModal!: TemplateRef<any>;
   private authSubscription!: Subscription;
   private userSubscription!: Subscription;
   usuario: string = '';
   foto: string = 'assets/usuarios/default-user.png';
-fotoUrl!:string;
+  fotoUrl!: string;
   loginError: string | null = null;
   registerError: string | null = null;
   alerts: string[] = [];
@@ -43,7 +45,7 @@ fotoUrl!:string;
     bio: ''
   };
 
-  constructor(private modalService: NgbModal, private http:HttpClient, private authService: AuthService, private imageService:ImageService,private snackbar:MatSnackBar) { }
+  constructor(private modalService: NgbModal, private http: HttpClient, private authService: AuthService, private imageService: ImageService, private snackbar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.authSubscription = this.authService.authStatus$.subscribe(isLoggedIn => {
@@ -65,8 +67,8 @@ fotoUrl!:string;
 
     if (userData) {
       this.usuario = userData.nombre || userData.email;
-      this.foto =  userData.foto_perfil || 'assets/usuarios/default-user.png';
-      this.fotoUrl= this.imageService.getUsuarioImagenUrl(this.foto);
+      this.foto = userData.foto_perfil || 'default-user.png';
+      this.fotoUrl = this.imageService.getUsuarioImagenUrl(this.foto);
       this.id = userData.sub;
     } else {
       this.usuario = '';
@@ -78,8 +80,17 @@ fotoUrl!:string;
 
   abrirModal(modal: TemplateRef<any>) {
     this.modalService.open(modal, { centered: true });
+const email = localStorage.getItem('emailRecordarme');
+if (email) {
+  this.emailInput = email;
+  this.recordarme = true;
+}
   }
-
+  focusPassword() {
+    if (this.passwordInput && this.passwordInput.nativeElement) {
+      this.passwordInput.nativeElement.focus();
+    }
+  }
   cerrarModal() {
     this.modalService.dismissAll();
   }
@@ -98,6 +109,11 @@ fotoUrl!:string;
         if (response.token) {
           this.authService.guardarToken(response.token);
           this.cerrarModal();
+          if (this.recordarme) {
+            localStorage.setItem('emailRecordarme', this.emailInput);
+          } else {
+            localStorage.removeItem('emailRecordarme');
+          }
           window.location.reload();
         }
       },
@@ -152,34 +168,34 @@ fotoUrl!:string;
   }
 
   recuperar() {
-  const email = this.emailrecuperacion; 
+    const email = this.emailrecuperacion;
 
-  if (!email) {
-    this.snackbar.open('Por favor ingresa un correo electrónico.', 'Cerrar', {
-      duration: 3000
-    });
-    return;
-  }
-
-  this.http.post('http://localhost/api/recuperar', { correo: email }, {
-    headers: { 'Content-Type': 'application/json' }
-  }).subscribe({
-    next: (response: any) => {
-      this.snackbar.open(response.mensaje || 'Correo de recuperación enviado', 'Cerrar', {
-        duration: 5000
+    if (!email) {
+      this.snackbar.open('Por favor ingresa un correo electrónico.', 'Cerrar', {
+        duration: 3000
       });
-      this.cerrarModal();
-      this.emailrecuperacion = '';
-    },
-    error: (err) => {
-      console.error('Error al enviar correo de recuperación:', err);
-      const errorMsg = err.error?.error || 'Error al enviar correo de recuperación';
-      this.snackbar.open(errorMsg, 'Cerrar', {
-        duration: 5000
-      });
+      return;
     }
-  });
-}
+
+    this.http.post('http://localhost:80/api/recuperar', { correo: email }, {
+      headers: { 'Content-Type': 'application/json' }
+    }).subscribe({
+      next: (response: any) => {
+        this.snackbar.open(response.mensaje || 'Correo de recuperación enviado', 'Cerrar', {
+          duration: 5000
+        });
+        this.cerrarModal();
+        this.emailrecuperacion = '';
+      },
+      error: (err) => {
+        console.error('Error al enviar correo de recuperación:', err);
+        const errorMsg = err.error?.error || 'Error al enviar correo de recuperación';
+        this.snackbar.open(errorMsg, 'Cerrar', {
+          duration: 5000
+        });
+      }
+    });
+  }
 
   logout() {
     localStorage.removeItem('auth_token');

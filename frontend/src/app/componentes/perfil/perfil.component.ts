@@ -34,6 +34,7 @@ import { ImageService } from '../../servicios/image.service';
   ]
 })
 export class PerfilComponent implements OnInit {
+document: any;
   cerrarSesion() {
     this.authservice.logout();
   }
@@ -148,81 +149,42 @@ export class PerfilComponent implements OnInit {
         return;
       }
 
-      const datosTexto: any = {
+      const datos: any = {
         nombre: this.usuario,
         email: this.correo,
         bio: this.biografia || ''
       };
 
       if (this.contrasena) {
-        datosTexto.password = this.contrasena;
+        datos.password = this.contrasena;
       }
 
-      const headersJSON = new HttpHeaders({
+      const headers = new HttpHeaders({
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       });
 
-      const headersFormData = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      });
-      console.log('Datos a enviar:', this.datosUsuario);
-      this.http.put<any>(`http://localhost/api/usuarios/${this.datosUsuario.id}`, datosTexto, { headers: headersJSON })
-        .pipe(
-          switchMap(respuestaTexto => {
-            if (!respuestaTexto?.success) {
-              throw new Error(respuestaTexto?.error || 'Error al actualizar los datos del perfil');
-            }
-
-            // Si hay imagen, hacemos la segunda petición POST
-            if (this.archivoSeleccionado) {
-              const formData = new FormData();
-              formData.append('foto_perfil', this.archivoSeleccionado);
-
-              return this.http.post<any>(`http://localhost/api/usuarios/${this.datosUsuario.id}/foto`, formData, { headers: headersFormData });
-            } else {
-              // Si no hay imagen, devolvemos una respuesta simulada para mantener la estructura
-              return of({ success: true });
-            }
-          }),
-          catchError((error: any) => {
-            this.cargando = false;
-            console.error('Error en actualización combinada:', error);
-            this.errorCarga = error.message || 'Error al actualizar el perfil';
-            return of(null);
-          })
-        )
+      this.http.put<any>(`http://localhost:80/api/usuarios/${this.datosUsuario.id}`, datos, { headers })
         .subscribe({
-          next: (respuestaFinal) => {
+          next: (respuesta) => {
             this.cargando = false;
-
-            if (respuestaFinal?.success) {
+            if (respuesta?.success) {
               this.mostrarMensaje('Perfil actualizado correctamente');
-              this.authservice.refrescarToken().subscribe({
-                next: () => {
-                },
-                error: (err) => {
-                  console.error('Error al refrescar token:', err);
-                }
-              });
+              this.authservice.refrescarToken().subscribe();
               this.cargarDatosUsuario();
-
               this.resetForm();
+            } else {
+              this.errorCarga = respuesta?.error || 'Error al actualizar el perfil';
             }
           },
           error: (error) => {
             this.cargando = false;
-            console.error('Error final en la suscripción:', error);
+            console.error('Error:', error);
             this.errorCarga = 'Error al comunicarse con el servidor';
           }
         });
     }
-  }
-
-
-
-
-
+}
 
   private resetForm() {
     this.contrasena = '';
@@ -234,12 +196,37 @@ export class PerfilComponent implements OnInit {
     });
   }
 
-  subirImagen() {
-    if (this.archivoSeleccionado && this.esMiPerfil) {
+ subirImagen() {
+    if (!this.archivoSeleccionado || !this.esMiPerfil) return;
+    
+    this.cargando = true;
+    const token = this.authservice.obtenerToken();
+    const formData = new FormData();
+    formData.append('foto_perfil', this.archivoSeleccionado);
 
-      this.modalService.dismissAll();
-    }
-  }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.post<any>(`http://localhost:80/api/usuarios/${this.datosUsuario.id}/foto`, formData, { headers })
+      .subscribe({
+        next: (respuesta) => {
+          this.cargando = false;
+          if (respuesta.success) {
+            this.mostrarMensaje('Imagen de perfil actualizada correctamente');
+            this.modalService.dismissAll();
+            this.cargarDatosUsuario(); // Recargar datos para ver la nueva imagen
+          } else {
+            this.errorImagen = respuesta.error || 'Error al actualizar la imagen';
+          }
+        },
+        error: (error) => {
+          this.cargando = false;
+          this.errorImagen = 'Error al comunicarse con el servidor';
+          console.error('Error al subir imagen:', error);
+        }
+      });
+}
 
   mostrarMensaje(mensaje: string) {
     this.snackBar.open(mensaje, 'Cerrar', {

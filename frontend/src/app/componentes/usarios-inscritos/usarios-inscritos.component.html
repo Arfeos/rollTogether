@@ -18,8 +18,8 @@
 
             <div *ngIf="usuariosPaginados.length > 0">
                 <div *ngFor="let usuario of usuariosPaginados" class="mb-3 p-3 border rounded">
-                    <div class="d-flex align-items-center justify-content-between align-items-center">
-                        <div class="d-flex flex-row justify-content-start align-items-center">
+                    <div [routerLink]="['/perfil', usuario.id_usuario]"  class="d-flex align-items-center justify-content-between align-items-center carta">
+                        <div class="d-flex flex-row justify-content-start align-items-center carta">
                             <img [src]="getPerfil(usuario.foto_perfil)" [alt]="usuario.nombre" class="rounded-circle me-4"
                                 style="width: 80px; height: 80px; object-fit: cover;">
 
@@ -35,7 +35,7 @@
                         <div class="d-flex flex-row align-items-center">
 
                             <button mat-icon-button color="primary" matTooltip="eliminar usuario de la partida"
-                                (click)="eliminarUsuario(usuario.id_usuario)" class="mt-2">
+                                (click)="eliminarUsuario(usuario.id_usuario,$event)" class="mt-2">
                                 <mat-icon>block</mat-icon>
                             </button>
 

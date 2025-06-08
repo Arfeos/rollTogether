@@ -89,7 +89,6 @@ export class PartidasInscritasComponent {
       )
       .subscribe(respuesta => {
         this.partidas = respuesta;
-        console.log(this.partidas);
         this.totalPartidas = this.partidas.length;
         this.totalPaginas = Math.ceil(this.totalPartidas / this.itemsPorPagina);
 

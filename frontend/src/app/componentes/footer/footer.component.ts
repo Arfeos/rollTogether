@@ -23,7 +23,7 @@ export class FooterComponent {
       asunto: this.asunto,
       descripcion: this.descripcion
     }
-        this.http.post('http://localhost/api/reportes', datos).subscribe({
+        this.http.post('http://localhost:80/api/reportes', datos).subscribe({
         next: () => {
             this.snackbar.open('Reporte enviado con éxito', 'Cerrar', {
                 duration: 3000,

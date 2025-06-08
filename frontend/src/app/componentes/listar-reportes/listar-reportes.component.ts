@@ -45,7 +45,6 @@ export class ListarReportesComponent {
   cargarreporte() {
     this.cargando = true;
     this.errorcarga = null;
-    console.log(this.authservice.getDatosUsuario().rol)
     this.http.get<any>(`http://localhost:80/api/reportes`, {
       headers: {
         'Authorization': `Bearer ${this.authservice.obtenerToken()}`
@@ -62,7 +61,6 @@ export class ListarReportesComponent {
       .subscribe(respuesta => {
 
         this.reportes = respuesta;
-        console.log(this.reportes)
         this.totalreportes = this.reportes.length;
         this.totalPaginas = Math.ceil(this.totalreportes / this.itemsPorPagina);
 

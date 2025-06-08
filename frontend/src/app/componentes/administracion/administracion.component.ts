@@ -53,12 +53,12 @@ ngOnInit(): void {
         { 
       titulo: 'listar Categorias', 
       icono: 'category',
-      ruta: '/admin/listar-categorias'
+      ruta: '/admin/categorias'
     },
         { 
       titulo: 'listar Sistemas', 
       icono: 'computer',
-      ruta: '/admin/listar-sistemas'
+      ruta: '/admin/sistemas'
     }
   ];
     cerrarAlerta() {

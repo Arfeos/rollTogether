@@ -8,11 +8,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../servicios/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-crear-categoria-sistema',
   imports: [
-        CommonModule,
+    CommonModule,
     FormsModule,
     MatButtonModule,
     MatCardModule,
@@ -25,22 +27,22 @@ import { AuthService } from '../../servicios/auth.service';
   styleUrl: './crear-categoria-sistema.component.css'
 })
 export class CrearCategoriaSistemaComponent {
-tipoSeleccionado: string = '';
+  tipoSeleccionado: string = '';
   mostrarFormulario: boolean = false;
   nombreCategoria: string = '';
   nombreSistema: string = '';
   descripcionSistema: string = '';
   anioSalidaSistema: number | null = null;
-  errorCarga: string|null= null;
-  cargando: boolean=true;
-  
-  constructor(private authService:AuthService) { }
-ngOnInit(): void {
-  if (!this.authService.estaAutenticado() || this.authService.getDatosUsuario().rol !== 'admin') {
-    this.errorCarga = "Debes ser administrador para acceder a esta sección";
+  errorCarga: string | null = null;
+  cargando: boolean = true;
+
+  constructor(private authService: AuthService, private http: HttpClient, private snackbar: MatSnackBar) { }
+  ngOnInit(): void {
+    if (!this.authService.estaAutenticado() || this.authService.getDatosUsuario().rol !== 'admin') {
+      this.errorCarga = "Debes ser administrador para acceder a esta sección";
+    }
+    this.cargando = false;
   }
-  this.cargando = false;
-}
 
   seleccionarTipo(tipo: string) {
     this.tipoSeleccionado = tipo;
@@ -48,19 +50,41 @@ ngOnInit(): void {
   }
 
   registrarCategoria() {
-    console.log('Categoría registrada:', {
-      nombre: this.nombreCategoria
+    const data = { nombre: this.nombreCategoria };
+    this.http.post('http://localhost:80/api/categorias', data, {
+      headers: {
+        'Authorization': `Bearer ${this.authService.obtenerToken()}`
+      }
+    }).subscribe({
+      next: (response) => {
+        this.snackbar.open('¡Categoría registrada con éxito!', 'Cerrar', { duration: 3000 });
+        this.resetFormularios();
+      },
+      error: (error) => {
+this.snackbar.open(`Error al registrar categoría: ${error.error?.error || 'Error desconocido'}`, 'Cerrar', { duration: 3000 });
+      }
     });
-    this.resetFormularios();
   }
 
   registrarSistema() {
-    console.log('Sistema registrado:', {
+    const data = {
       nombre: this.nombreSistema,
       descripcion: this.descripcionSistema,
-      anioSalida: this.anioSalidaSistema
+      anio_salida: this.anioSalidaSistema
+    };
+    this.http.post('http://localhost:80/api/sistemas', data, {
+      headers: {
+        'Authorization': `Bearer ${this.authService.obtenerToken()}`
+      }
+    }).subscribe({
+      next: (response) => {
+        this.snackbar.open('¡Sistema de juego registrado con éxito!', 'Cerrar', { duration: 3000 });
+        this.resetFormularios();
+      },
+      error: (error) => {
+this.snackbar.open(`Error al registrar categoría: ${error.error?.error || 'Error desconocido'}`, 'Cerrar', { duration: 3000 });
+      }
     });
-    this.resetFormularios();
   }
 
   resetFormularios() {

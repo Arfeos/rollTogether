@@ -62,7 +62,6 @@ export class UsariosInscritosComponent {
       )
       .subscribe(respuesta => {
         this.usuarios = respuesta;
-        console.log(this.usuarios);
         this.totalusuarios = this.usuarios.length;
         this.totalPaginas = Math.ceil(this.totalusuarios / this.itemsPorPagina);
 
@@ -80,11 +79,11 @@ export class UsariosInscritosComponent {
     if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas) {
       this.paginaActual = nuevaPagina;
 
-      console.log(this.paginaActual);
     }
   }
 
-  eliminarUsuario(id: number): void {
+  eliminarUsuario(id: number, event:Event): void {
+    event.stopPropagation();
     if (this.id) {
       this.http.delete(`http://localhost:80/api/inscripciones/usuario/${id}/partida/${this.id}`, {
         headers: {

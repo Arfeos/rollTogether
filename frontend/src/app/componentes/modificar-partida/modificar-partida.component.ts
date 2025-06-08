@@ -80,6 +80,7 @@ export class ModificarPartidaComponent implements OnInit {
 
   cargarDatosPartida(): void {
     if (this.id) {
+      this.cargando = true;
       this.http.get<any>(`http://localhost:80/api/partidas/${this.id}`)
         .pipe(
           catchError(err => {
@@ -108,6 +109,7 @@ export class ModificarPartidaComponent implements OnInit {
               ubicacion: data.ubicacion
             };
             this.imageUrl = this.imgService.getPortadaImagenUrl(data.portada) || null;
+            this.cargando=false;
           }
           this.cargarSistemasyCategorias();
         });
@@ -213,7 +215,6 @@ export class ModificarPartidaComponent implements OnInit {
                     this.snackbar.open('Partida actualizada correctamente', 'Cerrar', {
       duration: 3000,
         });
-          this.router.navigate(['/Mis-partidas']);
         }
       });
   }

@@ -6,7 +6,7 @@
 <mat-spinner *ngIf="cargando" diameter="50" class="mx-auto my-5"></mat-spinner>
 <div *ngIf="!cargando && errorCarga==null" class="container mt-4">
   <div class="card">
-    <div class="card-header bg-primary text-white">
+    <div class="card-header rounded-top text-white">
       <h2 class="mb-0">Listado de Usuarios</h2>
     </div>
 
@@ -24,7 +24,7 @@
                  class="rounded-circle me-4"
                  style="width: 80px; height: 80px; object-fit: cover;">
             
-            <div class="flex-grow-1">
+            <div class="flex-grow-1 datos">
               <h4 class="mb-1">{{ usuario.nombre }}</h4>
               <div class="text-muted mb-1">
                 <mat-icon class="align-middle me-1">email</mat-icon>

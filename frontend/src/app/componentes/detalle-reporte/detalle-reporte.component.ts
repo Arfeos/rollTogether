@@ -35,8 +35,6 @@ constructor(private http:HttpClient, private authservice:AuthService,   private 
         next: (data) => {
           this.cargando = false;
           this.reporte = data;
-          console.log('Reporte cargado:', this.reporte);
-          console.log(data);
         },
         error: (err) => {
           this.cargando = false;
@@ -51,7 +49,7 @@ constructor(private http:HttpClient, private authservice:AuthService,   private 
   }
 cambiarestado(id_reporte: string) {
  let nuevoEstado="";
-  if(this.reporte.estado="resuelto"){
+  if(this.reporte.estado=="resuelto"){
      nuevoEstado = 'pendiente';
   }
   else{
@@ -60,7 +58,6 @@ cambiarestado(id_reporte: string) {
   const body = {
     estado: nuevoEstado
   };
-
   this.http.put(`http://localhost:80/api/reportes/${id_reporte}/estado`, body, {
     headers: {
       'Authorization': `Bearer ${this.authservice.obtenerToken()}`,
@@ -68,8 +65,6 @@ cambiarestado(id_reporte: string) {
     }
   }).subscribe({
     next: (data) => {
-      console.log('Estado actualizado correctamente:', data);
-      // Actualiza el estado localmente
       if (this.reporte && this.reporte.id == +id_reporte) {
         this.reporte.estado = nuevoEstado;
       }

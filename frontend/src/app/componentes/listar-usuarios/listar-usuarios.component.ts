@@ -30,7 +30,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./listar-usuarios.component.css']
 })
 export class ListarUsuariosComponent implements OnInit {
-    esMiPerfil: boolean = true;
   esAdmin: boolean = false;
   cargando: boolean = false;
   id!: number;
@@ -52,7 +51,6 @@ eliminarUsuario(id_usuario: any, event:Event) {
     catchError(error => {
       this.snackbar.open(error.error.error, 'Cerrar', { duration: 3000 });
       this.cargando = false;
-      console.error('Error al eliminar la partida:', error);
       return of({ success: false, data: [] });
     })
   )
@@ -126,7 +124,6 @@ actualizarDatosPagina(): void {
           )
           .subscribe(respuesta => {
               this.usuarios = respuesta;
-              console.log(this.usuarios);
             this.totalusuarios = this.usuarios.length;
             this.totalPaginas = Math.ceil(this.totalusuarios / this.itemsPorPagina);
         

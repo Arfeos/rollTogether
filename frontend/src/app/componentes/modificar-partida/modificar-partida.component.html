@@ -76,7 +76,7 @@
   </div>
 
   <!-- Sección inferior con más campos -->
-  <div class="row">
+  <div class="row ">
     <div class="col-md-12">
       <div class="data-box bg-light p-4 rounded">
         <!-- Descripción -->
@@ -88,14 +88,14 @@
         </div>
 
         <!-- Detalles adicionales -->
-        <div class="row">
-          <div class="col-md-3 mb-3">
+        <div class="row campos">
+          <div class=" mb-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Aforo máximo</mat-label>
               <input matInput type="number" [(ngModel)]="partida.aforoMaximo" name="aforoMaximo" min="1" required>
             </mat-form-field>
           </div>
-          <div class="col-md-3 mb-3">
+          <div class=" mb-3">
             <mat-form-field appearance="outline">
               <mat-label>Fecha *</mat-label>
               <input matInput [matDatepicker]="datePicker" [(ngModel)]="fecha" name="fecha" required>
@@ -103,13 +103,13 @@
               <mat-datepicker #datePicker></mat-datepicker>
             </mat-form-field>
           </div>
-          <div class="col-md-3  mb-3">
+          <div class=" mb-3">
             <mat-form-field appearance="outline">
               <mat-label>Hora *</mat-label>
               <input matInput type="time" [(ngModel)]="hora" name="hora" required>
             </mat-form-field>
           </div>
-          <div class="col-md-3 mb-3">
+          <div class=" mb-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Ubicación/Plataforma</mat-label>
               <input matInput [(ngModel)]="partida.ubicacion" name="ubicacion" required>
@@ -122,7 +122,7 @@
         <!-- Botón de envío -->
         <div class="text-end mt-3">
           <button mat-raised-button color="primary" type="submit" (click)="onSubmit()">
-            <mat-icon>save</mat-icon> Crear partida
+            <mat-icon>save</mat-icon> modificar partida
           </button>
         </div>
       </div>

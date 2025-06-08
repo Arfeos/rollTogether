@@ -13,6 +13,8 @@ import { MisPartidasComponent } from './componentes/mis-partidas/mis-partidas.co
 import { PartidasInscritasComponent } from './componentes/partidas-inscritas/partidas-inscritas.component';
 import { UsariosInscritosComponent } from './componentes/usarios-inscritos/usarios-inscritos.component';
 import { DetalleReporteComponent } from './componentes/detalle-reporte/detalle-reporte.component';
+import { ListarCategoriasComponent } from './componentes/listar-categorias/listar-categorias.component';
+import { ListarSistemasComponent } from './componentes/listar-sistemas/listar-sistemas.component';
 export const routes: Routes = [
 
   {
@@ -42,6 +44,12 @@ export const routes: Routes = [
   {
     path: "admin/reportes",
     component: ListarReportesComponent
+  },
+   { path: "admin/sistemas",
+    component: ListarSistemasComponent
+  },
+    {path: "admin/categorias",
+    component: ListarCategoriasComponent
   },
   {
     path: "admin/crear",

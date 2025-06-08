@@ -43,7 +43,6 @@ export class ListarPartidasComponent {
   cargarPartida() {
     this.cargando = true;
     this.errorcarga = null;
-    console.log(this.authservice.getDatosUsuario().rol)
     this.http.get<any>(`http://localhost:80/api/partidas/admin`, {
       headers: {
         'Authorization': `Bearer ${this.authservice.obtenerToken()}`
@@ -60,7 +59,6 @@ export class ListarPartidasComponent {
       .subscribe(respuesta => {
 
         this.partidas = respuesta;
-        console.log(this.partidas)
         this.totalPartidas = this.partidas.length;
         this.totalPaginas = Math.ceil(this.totalPartidas / this.itemsPorPagina);
 
