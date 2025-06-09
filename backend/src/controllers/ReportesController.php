@@ -80,12 +80,12 @@ class ReportesController
                 'Messages' => [
                     [
                         'From' => [
-                            'Email' => "supp.rolltogether@gmail.com",
+                            'Email' => "soporte@rolltogether.es",
                             'Name' => "Soporte RollTogether"
                         ],
                         'To' => [
                             [
-                                'Email' => "supp.rolltogether@gmail.com",
+                                'Email' => "soporte@rolltogether.es",
                                 'Name' => "Soporte RollTogether"
                             ]
                         ],

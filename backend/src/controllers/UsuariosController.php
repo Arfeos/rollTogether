@@ -562,7 +562,7 @@ class UsuariosController
                 'Messages' => [
                     [
                         'From' => [
-                            'Email' => "supp.rolltogether@gmail.com",
+                            'Email' => "soporte@rolltogether.es",
                             'Name' => "Soporte RollTogether"
                         ],
                         'To' => [
